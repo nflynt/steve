@@ -20,8 +20,7 @@ func (s *schemaFieldVisitor) VisitArray(array *proto.Array) {
 	// it was kept this way to provide backwards compat with previous endpoints.
 	array.SubType.Accept(s)
 	subField := s.field
-	field.Type = "array"
-	field.SubType = subField.Type
+	field.Type = "array[" + subField.Type + "]"
 	s.field = field
 }
 
@@ -35,8 +34,7 @@ func (s *schemaFieldVisitor) VisitMap(protoMap *proto.Map) {
 	// it was kept this way to provide backwards compat with previous endpoints.
 	protoMap.SubType.Accept(s)
 	subField := s.field
-	field.Type = "map"
-	field.SubType = subField.Type
+	field.Type = "map[" + subField.Type + "]"
 	s.field = field
 }
 

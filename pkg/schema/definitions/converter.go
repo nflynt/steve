@@ -31,6 +31,7 @@ func crdToDefinition(jsonSchemaProps *apiextv1.JSONSchemaProps, modelName string
 // as defined here: https://swagger.io/specification/v3/
 func convertJSONSchemaPropsToDefinition(props apiextv1.JSONSchemaProps, path proto.Path) (map[string]definition, error) {
 	definitions := make(map[string]definition)
+
 	_, err := convertJSONSchemaPropsObject(&props, path, definitions)
 	if err != nil {
 		return definitions, err
@@ -115,7 +116,7 @@ func convertJSONSchemaPropsArray(props *apiextv1.JSONSchemaProps, path proto.Pat
 		return definitionField{}, err
 	}
 
-	field.SubType = subField.Type
+	field.Type = "array[" + subField.Type + "]"
 
 	return field, nil
 }
@@ -130,7 +131,7 @@ func convertJSONSchemaPropsMap(props *apiextv1.JSONSchemaProps, path proto.Path,
 		if err != nil {
 			return definitionField{}, err
 		}
-		field.SubType = subField.Type
+		field.Type = "map[" + subField.Type + "]"
 	} else {
 		// Create the object in the definitions (won't recurse because
 		// by this point, we know props doesn't have any properties)
@@ -138,7 +139,7 @@ func convertJSONSchemaPropsMap(props *apiextv1.JSONSchemaProps, path proto.Path,
 		if err != nil {
 			return definitionField{}, err
 		}
-		field.SubType = subField.Type
+		field.Type = "map[" + subField.Type + "]"
 	}
 	return field, nil
 
